@@ -92,7 +92,9 @@ Add it as a `post` (you could also use `get`, but idiomatically json payloads ar
 
 ```rust
  use axum::routing::post;
+```
 
+```rust
  ...
     let app = Router::new()
         .route("/", get(hello_world))
