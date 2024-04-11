@@ -33,7 +33,6 @@ run_task = { name = ["backend-dev", "tailwind-dev", "frontend-dev"], parallel = 
 ```
 
 This file describes all the processes it will execute, when you type in `cargo make`.
-
 But for this to work go ahead and install `cargo-watch` `cargo-make`
 
 ```sh
@@ -43,6 +42,8 @@ cargo install cargo-make
 
 Great! Now, if you execute
 
-```
+```sh
 cargo make --no-workspace dev
 ```
+
+every stepped we talked before, is now executed within one command. With hot-reload!
