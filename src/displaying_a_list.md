@@ -5,7 +5,7 @@ We are going to display a list in the frontend, which is served by our backend.
 
 ## Makefile
 
-First we introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
+But first we introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
 We can execute our three commands concurrently with one command, which is:
 - servig our backend
 - serving our frontend
@@ -17,7 +17,7 @@ Go ahead an create `Makefile.toml` at the top level.
 [tasks.backend-dev]
 install_crate = "cargo-watch"
 command = "cargo"
-args = ["watch", "-w", "backend", "-w", "model", "-x", "run --bin backend"]
+args = ["watch", "-w", "backend", "-x", "run --bin backend"]
 
 [tasks.frontend-dev]
 install_crate = "dioxus-cli"
