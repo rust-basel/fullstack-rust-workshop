@@ -91,7 +91,7 @@ Great! Now, if you execute
 cargo make --no-workspace dev
 ```
 
-every stepped we talked before, is now executed within one command. With hot-reload!
+Every single command we used before is now executed within one command. With hot-reload!
 
 ## Backend
 
