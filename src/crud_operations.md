@@ -1,8 +1,8 @@
 # CRUD Operations
 
-Now that we have a "database" usuable in our axum backend. Let's write handling functions, which have access to the database and read and modify it.
+Now that we have a "database" usable in our axum backend. Let's write handling functions, which have access to the database and read and modify it.
 Head to your `backend` crate and create again a new module. This time it's called `controllers.rs`. Why named controllers?
-There is a famous design pattern [called model, view, controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). Controller are usually the parts, which execute your logic.
+There is a famous design pattern called [model, view, controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). Controllers are usually those parts, which execute your logic.
 In our case, you've already seen them. These are the functions, we give the `Router` as callback in a `route`.
 
 Do not forget to add new module in the `main.rs` file.
@@ -22,7 +22,7 @@ Do not forget to make this one public - by prepending a pub. Otherwise it's not 
 pub async fn get_items() -> impl IntoResponse {...}
 ```
 
-Afterwards your `main.rs` should look like:
+Afterwards your `main.rs` should look like this:
 
 ```rust
 mod controllers;
@@ -46,7 +46,7 @@ async fn main() {
 }
 ```
 
-As well as your `controller.rs`
+As well as your `controller.rs`:
 
 ```rust
 use axum::{response::IntoResponse, Json};
