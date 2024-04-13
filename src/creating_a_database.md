@@ -86,3 +86,40 @@ impl Default for InMemoryDatabase {
     }
 }
 ```
+
+## Adding the database our axum backend
+
+Adding this database is farely simple with axums `Router` builder.
+Go to into the `backends` main function, init a default database and use it inside the router.
+
+Before we can use our database, we have to make sure that there is no data race. Or - the compiler checks that for us.
+
+Make a type alias, where we wrap our database in an `Arc<RwLock>`. An Arc is an `atomic` and reference counted smart pointer in Rust.
+The `RwLock` makes sure, that reads and writes are mutually exclusive. There is only one writer holding a lock. But several readers can hold onto the same lock.
+
+```rust
+use std::sync::{Arc, RwLock};
+use database::InMemoryDatabase;
+
+type Database = Arc<RwLock<InMemoryDatabase>>;
+```
+
+Afterwards you can just initialize this database as default - and inject it with axums `with_state(...)` router method.
+
+```rust
+#[tokio::main]
+async fn main() {
+    let db = Database::default();
+    let app = Router::new()
+        .route("/", get(hello_world))
+        .route("/:name", get(hello_name))
+        .route("/your-route", post(workshop_echo))
+        .route("/items", get(get_items))
+        .with_state(db);
+
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3001").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+```
+
+In the next chapter, we will write `controllers` functions for update, read and delete endpoints, where we use the database.
