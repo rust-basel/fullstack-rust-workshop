@@ -70,3 +70,61 @@ pub async fn get_items() -> impl IntoResponse {
 ```
 
 This should be our starting point.
+
+## Reading things
+
+Let's rewrite our `get_items` controller. Instead of returning a hardcoded list, let's fetch them from the database.
+Change the signature of your function.
+
+```rust
+use axum::extract::State;
+
+pub async fn get_items(State(state): State<Database>) -> impl IntoResponse {...}
+```
+
+Now you can access the database, that you've already injected with the `with_state(...)` method of the `Router`.
+
+But first, got to your `database.rs` module and add a new method to your `impl InMemoryDatabase` to return all items at once. 
+
+```rust
+  pub fn as_vec(&self) -> Vec<(String, ShoppingItem)> {
+      self.inner
+          .iter()
+          .map(|(uuid, item)| (uuid.clone(), item.clone()))
+          .collect()
+  }
+```
+
+For this, the database item must be clone, so add this also to the item. Morover the struct itself and its members must be public,
+so one can use it outside the `database.rs` module.
+
+```rust
+#[derive(Clone)]
+pub struct ShoppingItem {
+    pub title: String,
+    pub creator: String,
+}
+```
+
+With those changes, we now can rewrite our `get_items` function to fetch items from the database.
+
+```rust
+pub async fn get_items(State(state): State<Database>) -> impl IntoResponse {
+    let items: Vec<ShoppingListItem> = state
+        .read()
+        .unwrap()
+        .as_vec()
+        .iter()
+        .cloned()
+        .map(|(uuid, item)| ShoppingListItem {
+            title: item.title,
+            posted_by: item.creator,
+            uuid,
+        })
+        .collect();
+
+    Json(items)
+}
+```
+
+If you now execute all our do-all command `cargo make --no-workspace dev`, you get the items displayed, which are in the database :). Good Job!
