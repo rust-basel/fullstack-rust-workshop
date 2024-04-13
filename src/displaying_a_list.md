@@ -146,4 +146,35 @@ and run `cargo make --now-workspace dev`. Opening a webbrowser with `localhost:3
 Now that you have a backend, which can serve a list of items. Let's build a rudimentary frontend, that can display the list.
 Hop to your `frontend` crate.
 
+### Fetching items
 
+First let's add some logic to fetch data from the backend. We can do this by using the `reqwest` crate. We also need to add our 
+`model crate`.
+
+```rust
+cargo add reqwest -F json
+cargo add model --path ../model
+```
+
+Let's add a small function, that is fetching items.
+
+```rust
+use model::ShoppingListItem;
+
+async fn get_items() -> Result<Vec<ShoppingListItem>, reqwest::Error> {
+    let url = "http://localhost:3001/items";
+    let list = reqwest::get(url)
+        .await?
+        .json::<Vec<ShoppingListItem>>()
+        .await;
+
+    list
+}
+```
+
+Quite some things are happening here. Let us look at the lines. We fetch something from the backend with `reqwest::get(url).await`, that returns
+a Result, containing the Payload of that request, or an error. The `?`-operator unwraps this Result - continueing the chain, if the Result was ok.
+If it was an error, the `?`-operator stops immediatly and returns the error. It also converts the error to the error type from the function, that is `reqwest:Error`.
+
+Then the successfully loaded payload is deserialized with `.json::<Vec<ShoppingListItem>>`. That also can fail, so this returns a Result.
+But instead of checking this Result with another `?`-operator, we just return this Result from the function.
