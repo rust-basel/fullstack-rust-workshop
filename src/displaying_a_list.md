@@ -96,19 +96,21 @@ every stepped we talked before, is now executed within one command. With hot-rel
 ## Backend
 
 Before we can fetch a list in the frontend, let's offer a list in backend first.
-For this, go to your backend create and add a Serialize struct, that we are going to send.
-This will be our Shopping Item:
+For this, go to your backend create and use the struct, we defined in our model crate. 
 
-```rust
-#[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
-pub struct ShoppingListItem {
-    pub title: String,
-    pub posted_by: String,
-    pub uuid: String,
-}
+Therefore, add the `model` crate as dependency to the `backend` crate to its `Cargo.toml`.
+
+```toml
+model = { path = "../model" }
 ```
 
-Then we obviously need a controller, that sends those items:
+Then add a use statement:
+
+```rust
+use model::ShoppingListItem;
+```
+
+Then we need a controller, that sends those items:
 
 ```rust
 async fn get_items() -> impl IntoResponse {
