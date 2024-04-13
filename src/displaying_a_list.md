@@ -62,7 +62,7 @@ Go ahead an create `Makefile.toml` at the top level.
 [tasks.backend-dev]
 install_crate = "cargo-watch"
 command = "cargo"
-args = ["watch", "-w", "backend", "-x", "run --bin backend"]
+args = ["watch", "-w", "backend", "-w", "model", "-x", "run --bin backend"]
 
 [tasks.frontend-dev]
 install_crate = "dioxus-cli"
