@@ -5,7 +5,7 @@ We are going to display a list in the frontend, which is served by our backend.
 
 ## Shared Models
 
-As we now connect the our front and backend, it makes sense to share the data models (otherwise we have to define those in both crates).
+As we now connect our front- and backend, it makes sense to share the data models (otherwise we have to define those in both crates).
 On the backend we need to serialize to json. On the frontend we need to deserialize from json.
 
 So go ahead top-level and create a new crate. As this is a library, we create it with the `--lib` tag.
@@ -50,7 +50,7 @@ members = [
 
 Let's first introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
 We can execute our three commands concurrently with one command, which is:
-- servig our backend
+- serving our backend
 - serving our frontend
 - telling tailwind to watch files, and to recompile the css if needed.
 
@@ -96,15 +96,15 @@ Every single command we used before is now executed within one command. With hot
 ## Backend
 
 Before we can fetch a list in the frontend, let's offer a list in backend first.
-For this, go to your backend create and use the struct, we defined in our model crate. 
+For this, go to your backend crate and use the struct, we defined in our model crate. 
 
-Therefore, add the `model` crate as dependency to the `backend` crate to its `Cargo.toml`.
+Therefore, add the `model` crate as dependency to the `backend` `Cargo.toml`.
 
 ```toml
 model = { path = "../model" }
 ```
 
-Then add a use statement:
+Then add a use statement in our current `main.rs`:
 
 ```rust
 use model::ShoppingListItem;
@@ -148,7 +148,7 @@ Hop to your `frontend` crate.
 
 ### Fetching items
 
-First let's add some logic to fetch data from the backend. We can do this by using the `reqwest` crate. We also need to add our 
+First let's add some logic to fetch data from the backend. We can do this by using the `reqwest` crate (a https client library). We also need to add our 
 `model crate`.
 
 ```rust
@@ -173,8 +173,102 @@ async fn get_items() -> Result<Vec<ShoppingListItem>, reqwest::Error> {
 ```
 
 Quite some things are happening here. Let us look at the lines. We fetch something from the backend with `reqwest::get(url).await`, that returns
-a Result, containing the Payload of that request, or an error. The `?`-operator unwraps this Result - continueing the chain, if the Result was ok.
-If it was an error, the `?`-operator stops immediatly and returns the error. It also converts the error to the error type from the function, that is `reqwest:Error`.
+a `Result`, containing the payload of that request, or an error. The `?`-operator unwraps this Result - continuing the chain, if the Result was ok.
+If it was an error, the `?`-operator stops immediately and returns the error. It also converts the error to the error type from the function, that is `reqwest:Error`.
 
 Then the successfully loaded payload is deserialized with `.json::<Vec<ShoppingListItem>>`. That also can fail, so this returns a Result.
 But instead of checking this Result with another `?`-operator, we just return this Result from the function.
+
+### Displaying items 
+
+`Dioxus` is a component based web framework - it is comparable to e.g. `React`, where you nest components into one another.
+Also, if one of the properties in a component changes, the components will be re-rendered.
+
+So let's create a component, that displays a single item - and then embedd this item component into a list, displaying all components
+
+```rust
+#[component]
+fn ShoppingListItemComponent(display_name: String, posted_by: String) -> Element {
+    rsx! {
+        div {
+            class: "flex items-center space-x-2",
+            p {
+                class: "grow text-2xl",
+                "{display_name}"
+            }
+            span {
+                "posted by {posted_by}"
+            }
+        }
+    }
+}
+```
+
+Anytime one of the properties, either `display_name` or `posted_by` is changing, the component is going to be re-rendered.
+
+Now we are going to use the above component to display a list. In Another component
+
+```rust
+#[component]
+fn ShoppingList() -> Element {
+    let items_request = use_resource(move || async move { get_items().await });
+
+    match &*items_request.read_unchecked() {
+        Some(Ok(list)) => rsx! {
+            div { class: "grid place-items-center min-h-500",
+                ul {
+                    class: "menu bg-base-200 w-200 rounded-box gap-1",
+                    for i in list {
+                        li {
+                            key: "{i.uuid}",
+                            ShoppingListItemComponent{
+                                display_name: i.title.clone(),
+                                posted_by: i.posted_by.clone()
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        Some(Err(err)) => {
+            rsx! {
+                p {
+                    "Error: {err}"
+                }
+            }
+        }
+        None => {
+            rsx! {
+                p {
+                    "Loading items..."
+                }
+            }
+        }
+    }
+}
+```
+The `use_resource` is one of `Dioxus` [hooks](https://dioxuslabs.com/learn/0.5/reference/hooks). Hooks help you to have stateful functionality in your components.
+`use_resource` especially let's you run async closures and returns you a result. In this case we `match` the result
+of the close. On the first render, there will be no data available. So matching will result in a `None`. The component will be re-rendered,
+once the future is finished and the result will be `Some(...)`thing. 
+
+If you now add the `ShoppingList` component to our App and execute our `cargo make` command (if it's not running already)
+you will see our list!
+
+```rust
+pub fn App() -> Element {
+    let rust_basel = "Rust Basel";
+    rsx! {
+        h1{
+            "Welcome to {rust_basel}"
+        }
+        button{
+            class: "btn",
+            "My stylish button"
+        }
+        ShoppingList{}
+    }
+}
+```
+
+Great! Now you got the basics! Let's head to our backend to create a rudimentary database - so we can later also add or remove items to the list.
