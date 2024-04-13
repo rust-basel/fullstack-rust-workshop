@@ -3,13 +3,58 @@
 Now we are going to connect our to parts!
 We are going to display a list in the frontend, which is served by our backend.
 
+## Shared Models
+
+As we now connect the our front and backend, it makes sense to share the data models (otherwise we have to define those in both crates).
+On the backend we need to serialize to json. On the frontend we need to deserialize from json.
+
+So go ahead top-level and create a new crate. As this is a library, we create it with the `--lib` tag.
+
+```sh
+cargo new --lib model
+```
+
+In this crate we will put all of our models, that are shared between our front- and backend.
+Go into this new model crate and add `serde` to this crate
+
+```sh
+cargo add serde -F derive
+```
+
+Then go ahead and add our first shared model.
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+pub struct ShoppingListItem {
+    pub title: String,
+    pub posted_by: String,
+    pub uuid: String,
+}
+```
+
+Great - now we can use this structure on both sides! Do not forget to add this crate to our workspace (top level `Cargo.toml`).
+
+```toml
+[workspace]
+resolver = "2"
+members = [
+    "frontend",
+    "backend",
+    "model"
+]
+```
+
 ## Makefile
 
-But first we introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
+Let's first introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
 We can execute our three commands concurrently with one command, which is:
 - servig our backend
 - serving our frontend
 - telling tailwind to watch files, and to recompile the css if needed.
+
+Also we use `cargo-watch`, that will watch specific files and recompile our code, once we save one of the watched files.
 
 Go ahead an create `Makefile.toml` at the top level.
 
@@ -93,3 +138,10 @@ Now add this to our router
 ```
 
 and run `cargo make --now-workspace dev`. Opening a webbrowser with `localhost:3001/items` should give you those items.
+
+## Frontend
+
+Now that you have a backend, which can serve a list of items. Let's build a rudimentary frontend, that can display the list.
+Hop to your `frontend` crate.
+
+
