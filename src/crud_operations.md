@@ -225,7 +225,7 @@ let app = Router::new()
 
 If you now run everything with our `all-do` cargo make, then you can already add new items with e.g. curl, or postman.
 
-Here a curl example:
+### Here a curl post example
 
 ```sh
 curl -i \
@@ -238,3 +238,52 @@ curl -i \
 After adding the item(s), reload the our frontend, that is running on `localhost:8080` (if you ran the `all-do` cargo make).
 
 Great - now you know how to add items! Let's fast forward and add the code to also delete items.
+
+## Deleting things
+
+Deletion is kind of the same as creation. We also need writeable access to the databse. But we do not have to accept a json payload, but a uuid.
+The only thing that changes is the extraction of a `Path` parameter. But you did that already in the axum hello world chapter.
+
+Our deletion controller:
+
+```rust
+use axum::extract::Path;
+
+pub async fn delete_item(
+    State(state): State<Database>,
+    Path(uuid): Path<Uuid>,
+) -> impl IntoResponse {
+    let Ok(mut db) = state.write() else {
+        return StatusCode::SERVICE_UNAVAILABLE;
+    };
+
+    db.delete_item(&uuid.to_string());
+
+    StatusCode::OK
+}
+```
+
+Adding our controller is also straightforward. We only have to add the `delete` in the `Router` and add above `delete_item` controller as callback.
+
+Use statements:
+```rust
+use axum::routing::delete;
+use controllers::delete_item;
+```
+
+With the router being expanded with: 
+
+```rust
+.route("/items/:uuid", delete(delete_item))
+```
+
+To delete an item (we do not have that in the UI) you can just use curl again. You only need to have an existing `uuid` at hand.
+
+
+```sh
+curl -X "DELETE" http://localhost:3001/items/<your-uuid>
+```
+
+To get an uuid, just create some items with the [curl command from above](#here-a-curl-post-example).
+
+Very good! Now our backend is ready to be consumed by our frontend. Let's head to the next chapter, where we add the needed components.
