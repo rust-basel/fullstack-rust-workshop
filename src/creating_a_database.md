@@ -87,7 +87,7 @@ impl Default for InMemoryDatabase {
 }
 ```
 
-## Adding the database our axum backend
+## Adding the database to our axum backend
 
 Adding this database is farely simple with axums `Router` builder.
 Go to into the `backends` main function, init a default database and use it inside the router.
