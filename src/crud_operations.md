@@ -128,3 +128,113 @@ pub async fn get_items(State(state): State<Database>) -> impl IntoResponse {
 ```
 
 If you now execute all our do-all command `cargo make --no-workspace dev`, you get the items displayed, which are in the database :). Good Job!
+
+## Creating things
+
+In order to add new items to the lists, we have to implement a controller enabling a `POST` with a `json` paylod. If you remember, you did this one
+in the beginning.
+
+
+In order to create a new item, we need two fields. One for the title and one for the creator. Let's create a Data Transfer Object (DTO).
+As this one is used in both of our crates, the `model` crate would be a good fit the place it in.
+
+```rust
+#[derive(Serialize, Deserialize)]
+pub struct PostShopItem {
+    pub title: String,
+    pub posted_by: String,
+}
+```
+
+Now our controller in the `backend` can deserialize this object, coming from our frontend.
+But who creates the unique id? Our backend does this. Therefore, let's add a crate that creates uuids.
+
+```sh
+cargo add uuid -F serde -F v4
+```
+
+Now let's create our controller:
+
+Add the correct use statements at the top:
+
+```rust
+use model::{PostShopItem, ShoppingListItem};
+use uuid::Uuid;
+use axum::http::StatusCode;
+use crate::database::ShoppingItem;
+```
+
+Then the controller - using all these:
+
+```rust
+pub async fn add_item(
+    State(state): State<Database>,
+    Json(post_request): Json<PostShopItem>,
+) -> impl IntoResponse {
+    let item = ShoppingItem {
+        title: post_request.title.clone(),
+        creator: post_request.posted_by.clone(),
+    };
+    let uuid = Uuid::new_v4().to_string();
+
+    let Ok(mut db) = state.write() else {
+        return (StatusCode::SERVICE_UNAVAILABLE).into_response();
+    };
+
+    db.insert_item(&uuid, item);
+
+    (
+        StatusCode::OK,
+        Json(ShoppingListItem {
+            title: post_request.title,
+            posted_by: post_request.posted_by,
+            uuid,
+        }),
+    )
+        .into_response()
+}
+```
+
+There is happening a lot. Let's go through it.
+
+The `State` extractor fetches your database, you injected in you main. We need this to write to the database and insert a new item.
+Then the `Json` extractor deserializes your recently created `PostShopItem`. The cool thing here: If the request is not correct - i.e. the client
+posts some other json the expected, the controller will automatically return a 400 code for invalid input data.
+
+In the body we create the datamodel, we have in our database. Therefore we transform the json payload to our `ShoppingItem` type.
+Then we create a universally unique identifier with the `Uuid` crate (There are different uuid version - we just pick v4). 
+
+Then there is rust syntax, the `let-else` statement, you probably did not see before. It binds the Ok value out of the Result coming from the `state.write()` statement.
+That is, if we get the lock to write - then we proceed. Otherwise, the `else` path, we return early with a service unavailable error code (503).
+
+If we can write, we then insert the new item with the generated uuid and respond with the newly generated item as a json serialized `ShoppingListItem`.
+
+The last thing we have to do, is now add this controller as `POST` callback into our axum `Router`.
+Go ahead an do that and do not forget the use statement on top:
+
+```rust
+use controllers::{add_item, get_items};
+```
+
+In your `fn main`:
+```rust
+let app = Router::new()
+    .route("/items", get(get_items).post(add_item))
+    .with_state(db);
+```
+
+If you now run everything with our `all-do` cargo make, then you can already add new items with e.g. curl, or postman.
+
+Here a curl example:
+
+```sh
+curl -i \
+    -H "Accept: application/json" \
+    -H "Content-Type: application/json" \
+    -X POST -d '{"title": "Pepperoni", "posted_by": "Rustacean"}' \
+    http://localhost:3001/items
+```
+
+After adding the item(s), reload the our frontend, that is running on `localhost:8080` (if you ran the `all-do` cargo make).
+
+Great - now you know how to add items! Let's fast forward and add the code to also delete items.
