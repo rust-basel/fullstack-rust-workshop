@@ -272,3 +272,38 @@ pub fn App() -> Element {
 ```
 
 Great! Now you got the basics! Let's head to our backend to create a rudimentary database - so we can later also add or remove items to the list.
+
+
+### CORS
+
+It may happen, that your browser denies fetching data from your backend because of Cross-Origin Resource Sharing (CORS).
+For security reasons browser restrict cross-origin HTTP requests. Your server has to explicitly tell the browser, which 
+sources, or oirigins, are allowed to fetch the server's resources.
+For more info have a read at the [MDN Web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+
+In order to tell our server, that it is ok to fetch data from it we can add a `cors` layer to our `Router`. That `layer` is another middleware.
+So the `cors` logic is applied to all routes we already wrote.
+
+Therefore add the `tower-http` crate.
+
+```rust
+cargo add tower-http -F cors
+```
+
+Afterwards you can add a layer around your existing routes, like so:
+
+```rust
+use tower_http::cors::CorsLayer;
+```
+
+And in your main function:
+```rust
+let app = Router::new()
+    .route("/", get(hello_world))
+    .route("/:name", get(hello_name))
+    .route("/your-route", post(workshop_echo))
+    .route("/items", get(get_items))
+    .layer(CorsLayer::permissive());
+```
+
+Note: Do not use `permissive` in production - but choose a cors policy, that fits your setting in production.
