@@ -28,7 +28,83 @@ This function will be used in our component, that we will write next.
 
 ## Adding a form
 
-We need a form with two fields. Namely the item name, as well as the person who wants that item.
+We need a form with two fields. Namely the `item name`, as well as the person who wants that item. An `author`.
+
+Let's begin simple. We need a form that has two input fields - and a button to commit those fields. Let's add those.
+
+```rust
+#[component]
+fn ItemInput() -> Element {
+    let mut item = use_signal(|| "".to_string());
+    let mut author = use_signal(|| "".to_string());
+
+    let onsubmit = move |evt: FormEvent| {};
+
+    rsx! {
+        div {
+            class: "w-300 m-4 mt-16 rounded",
+            form { class: "grid grid-cols-3 gap-2",
+                onsubmit: onsubmit,
+                div {
+                    input {
+                        value: "{item}",
+                        class: "input input-bordered input-primary w-full",
+                        placeholder: "next item..",
+                        r#type: "text",
+                        id: "item_name",
+                        name: "item_name",
+                        oninput: move |e| item.set(e.data.value().clone())
+                    }
+                }
+                div {
+                    input {
+                        value: "{author}",
+                        class: "input input-bordered input-primary w-full",
+                        placeholder: "wanted by..",
+                        r#type: "text",
+                        id: "author",
+                        name: "author",
+                        oninput: move |e| author.set(e.data.value().clone())
+                    }
+                }
+                button {
+                    class: "btn btn-primary w-full",
+                    r#type: "submit",
+                    "Commit"
+                }
+            }
+        }
+    }
+}
+```
+
+The content inside the `rsx` might seem long. But in the end you have three elements. Namely two `input` fields, as well as a `button` to commit the
+two input fields. Currently, we do nothing. If you ask yourself what the `use_signal`s are doing: They give this component state.
+
+When the component is rendered first, the we initialize `item` and `author` to empty Strings. Everytime we input something into the input fields,
+the respective symbols are set. The plan is: If we press the button, then we commit the current stored strings and build an item out them,
+which we will push to our `backend`.
+
+But let's add this component to our existing app.
+
+```rust
+pub fn App() -> Element {
+    let rust_basel = "Rust Basel";
+    rsx! {
+        h1{
+            "Welcome to {rust_basel}"
+        }
+        button{
+            class: "btn",
+            "My stylish button"
+        }
+        ShoppingList{}
+        ItemInput{}
+    }
+}
+```
+
+If you run our `cargo make --no-workspace dev`, then you can already see the finished form.
 
 
 
