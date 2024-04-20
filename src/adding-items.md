@@ -148,10 +148,10 @@ struct ListChanged;
 In our case a `zero-sized` object is sufficient.
 
 The idea:
-- When we post an item - and this call has been successfull - then we write to that signal.
+- When we post an item - and the post request has been successfull - then we write to that signal.
 - Our list display subscribes this signal. Because we write to it, anything that depends on it (i.e. our `use_resource` hook), will be executed again.
 
-In order that both components `ItemInput` and `ShoppingList` both have access to that signal, we have to `hoist` (TODO: Reference android JetPack Compose) the state. TL;DR: We have to lift the state up.
+In order that both components `ItemInput` and `ShoppingList` both have access to that signal, we have to `hoist` (lifting the state up) the state.
 
 So let's add a `use_signal` hook on top level and add the signal to both components:
 
@@ -183,3 +183,42 @@ pub fn App() -> Element {
     }
 }
 ```
+
+Let's `read` the signal on the list fetching side - and `write` on the `input` site in the next steps.
+
+### Writing the signal
+
+In the `ItemInput` component, go into your `onsubmit` callback. Now we can use the `Result` coming from our post http request.
+Change it and check the result, if it is ok. If it is ok, we `write` the signal (without writing anything to it).
+
+```rust
+  let item_name = item.read().to_string();
+  let author = author.read().to_string();
+  let response = post_item(PostShopItem {
+      title: item_name,
+      posted_by: author,
+  })
+  .await;
+
+  if response.is_ok() {
+      change_signal.write();
+  }
+```
+
+But that is sufficient enough, that other components, that subscribe to that signal (automatically when you have a `read`), to re-render or execute some logic attached to it.
+
+### Reading the signal
+
+Now let's subscribe to that signal by `read`ing it inside our `ShoppingList` component's `use_resource` hook.
+
+```rust
+  let items_request = use_resource(move || async move {
+      change_signal.read();
+      get_items().await
+  });
+```
+
+That is all you need to do in order let your components *communicate* with each other.
+
+If you did it correctly (if not - have a look at the solution) - when you now add a new item, the list is fetched afterwards and the list updates.
+Great! Let's do the same to delete items in our next chapter.
