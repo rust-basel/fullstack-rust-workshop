@@ -22,7 +22,20 @@ In order to use symbols across modules (structs and functions), you have to make
 
 ## Creating a helper function to delete items
 
-TODO
+Like in the previous examples (e.g. adding an item) we now add another helper function to delete items. Go to your new `controllers.rs` module in the frontend crateand create an async function `delete_item`, which takes an item_id, a `&str` as input.
+
+```rust
+pub async fn delete_item(item_id: &str) -> Result<(), reqwest::Error> {
+    reqwest::Client::new()
+        .delete(format!("http://localhost:3001/items/{}", item_id))
+        .send()
+        .await?;
+
+    Ok(())
+}
+```
+
+In this case we are just interested, if the deletion was ok. If there would happen an error, the `?`-Operator would return a `reqwest::Error`.
 
 ## Create the component
 
