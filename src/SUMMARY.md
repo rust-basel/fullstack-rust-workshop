@@ -11,5 +11,5 @@
 - [Deleting Items](./deleting_items.md)
 - [Add Routing](./add_routing.md)
 - [Database unique lists](./unique_lists.md)
-- [Backend expand to specific lists](./backend_unique_lists.md)
+- [Backend unique lists](./backend_unique_lists.md)
 - [Frontend load unique list](./frontend_unique_lists.md)
