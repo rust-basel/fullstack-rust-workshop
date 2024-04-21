@@ -8,7 +8,7 @@
 - [Creating a database](./creating_a_database.md)
 - [CRUD Operations](./crud_operations.md)
 - [Adding Items](./adding-items.md)
-- [Deleting Items](./deleting-items)
+- [Deleting Items](./deleting_items.md)
 - [Add Routing](./add_routing.md)
 - [Database unique lists](./unique_lists.md)
 - [Backend expand to specific lists](./backend_unique_lists.md)
