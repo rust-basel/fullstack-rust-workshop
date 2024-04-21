@@ -73,7 +73,7 @@ like buttons, navbars, etc.
 
 ### Installing dependencies
 
-First we go ahead and install our dependencies
+First we go ahead and install our dependencies.
 We want all configuration files top-level. So go back, where your top-level Cargo.toml is
 and initialize npm there. Then install tailwindcss for development and initialize tailwind.
 
@@ -115,28 +115,7 @@ Sorry for installing so many dependencies. And welcome to the npm world! :)
 
 Now that we have all dependencies, let's change the configuration, so we already have the final setup (You do not have to change it later anymore).
 
-Go to your package.json and change it, so it looks like this (change `main` to execute the `tailwind.config.js` file and `dependencies`, we only need daisy as dependency in the end)
-
-`package.json`:
-
-```json
-{
-  "name": "fullstack-workshop",
-  "version": "1.0.0",
-  "description": "",
-  "main": "tailwind.config.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "daisyui": "^4.10.1"
-  }
-}
-```
-
-Also change to `tailwind.config.js`:
+Changes to `tailwind.config.js` so it will watch the rsx classes in our .rs files:
 
 ```js
 module.exports = {
@@ -158,15 +137,16 @@ module.exports = {
   },
 }
 ```
-At very last, add a `input.css` to the frontend crate. It tells tailwind where it should generate css for you.
+At very last, add a `input.css` to the frontend crate. This is the target file for tailwind to generate the css for you,
+and this is the only stylesheet file we will serve to the browser.
 
-First cd into the frontend crate
+first cd into the frontend crate
 
 ```sh
 cd frontend
 ```
 
-Then add a `input.css`:
+then add a `input.css`:
 
 ```css
 @tailwind base;
@@ -174,11 +154,11 @@ Then add a `input.css`:
 @tailwind utilities;
 ```
 
-That's it. Now let's test our new styles.
+that's it. now let's test our new styles.
 
-### Let's add a stylish button!
+### let's add a stylish button!
 
-Go to your `main.rs` in the frontend crate, and add a button
+go to your `main.rs` in the frontend crate, and add a button
 ```rust
 pub fn App() -> Element {
     let rust_basel = "Rust Basel";
@@ -204,7 +184,7 @@ changes and re-generated the css file.
 npx tailwindcss -i ./frontend/input.css -o ./frontend/public/tailwind.css --watch
 ```
 
-Tailwind will regenerate a css file into your `frontend/public/` directory, where dioxus will fetch the style from.
+Tailwind will regenerate a css file into your `frontend/public/` directory, where dioxus will fetch the style from (by default).
 
 Now, let's finally have a look at our stylish first website!
 
@@ -214,8 +194,10 @@ Now, let's finally have a look at our stylish first website!
 dx serve --hot-reload
 ```
 
-If everthing worked our, you should have a page that looks like this:
+If everything worked our, you should have a page that looks like this:
 
 ![Stylish website](images/stylish.png "Our stylish website")
 
-All the commands, you have to run manually now will be put into one command later on.
+You still might need some hard refreshes or server restarts with `CTRL + C` and `dx serve --hot-reload` from time to time,
+but we will refine the hot reloading setup later on.
+All the commands, you have to run manually now will be put in a nice package that spins everything up with one command.

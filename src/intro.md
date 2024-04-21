@@ -1,6 +1,6 @@
 # Intro
 
-Today we will build a shopping list, that you can edit and share with your friends! So you never have to write one
+Today we will build a **shopping list**, that you can edit and share with your friends! So you never have to write one
 on your own again.
 
 The fullstack workshop will be a guided workshop, where we will implement the things together.
