@@ -15,7 +15,7 @@ cargo add tower-http -F cors
 
 [Axum](https://github.com/tokio-rs/axum) will be our webservice framework of choice. As it's very extensible with [tower-http](https://github.com/tower-rs/tower-http), where you can easily create middlewares.
 
-[Serde](https://serde.rs/) is Rusts de facto serialization library, so we can easily receive and send `json` payloads.
+[Serde](https://serde.rs/) is Rusts de facto standard serialization library, so we can easily receive and send `json` payloads and map them to Rust models.
 
 [Tokio](https://tokio.rs/) is the most used async runtime.
 
@@ -48,6 +48,9 @@ async fn main() {
 The `Router` lets you define the endpoints of your webservice. You can attach different routes to it, as well as other middlewares.
 Middlewares are logical units, that are shared across different routes. One example would be an `Auth` middleware.
 
+The most basic function of axum with a router is **mapping requests to handlers**. A handler is anything that
+implements `IntoResponse`, and the most trivial example of this is a String, as in the line `format!("Hello {name}")`.
+
 After adding those few lines run.
 
 ```rust
@@ -59,10 +62,10 @@ If you put `localhost:3001/your-name` into your browser, then the path parameter
 
 ## Responding with and receiving json payload
 
-If you want to create a ressource server side, you usually send a `POST` to your server with a Json payload.
+If you want to create a resource server side, you usually send a http `POST` to your server with a Json payload.
 Serialization is hard? Not with Rust - as we have the `Serde` crate.
 
-Add a rust struct annotated with serdes Serialize and Deserialize create.
+Add a rust struct annotated with serde's Serialize and Deserialize create.
 
 ```rust
 use serde::{Deserialize, Serialize};
