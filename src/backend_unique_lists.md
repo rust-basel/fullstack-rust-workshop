@@ -100,4 +100,37 @@ Now that we adapted the existing routes, let's add a new one to create a fresh l
 As we only have to request a `/list` endpoint without to provide any data - we can get away with a `GET` endpoint.
 Usually, when you want to create new ressources server side, you would supply a `post` with some data. But for our case we do not need this.
 
-Go ahead an create a new async function in the `controller.rs` module.
+What we need though is a response for this endpoint, as we want to know the `list_uuid` of the newly created list.
+
+Go to the model create and add a new `serializable` and `deserializable` model to the `lib.rs`:
+
+```rust
+#[derive(Serialize, Deserialize)]
+pub struct CreateListResponse {
+    pub uuid: String,
+}
+```
+
+This model will also be deserialized in the frontend later. So also put a Deserialize from `serde` ontop of the struct.
+
+Go ahead an create a new async function in the `controller.rs` module in our `backend` crate.
+
+```rust
+use model::{CreateListResponse, PostShopItem, ShoppingListItem}; // import what is needed.
+
+pub async fn create_shopping_list(State(state): State<Database>) -> impl IntoResponse {
+    let uuid = Uuid::new_v4().to_string();
+    state.write().unwrap().create_list(&uuid);
+
+    Json(CreateListResponse { uuid })
+}
+```
+
+The last thing, that is needed, is to put the `create_shopping_list` into our `Router`. You know the drill!
+Add it to the router with a `/list` route - fetched via a `GET`.
+
+```rust
+.route("/list", get(create_shopping_list))
+```
+
+Your are getting somewhere! :). Let's hop on to change the `frontend` also, to get/post and delete with the new routes, we just created.
