@@ -11,12 +11,12 @@ Sometimes, you can find combinations of the two separated by a `#`, e.g. `your.b
 
 We already saw API endpoint routes in action in the axum chapters, so this chapter is a about navigator routing, and we will use routes without any `#`.
 
-## add the router feature to cargo.toml
+## Add the router feature to cargo.toml
 ```toml
-dioxus = { version = "0.5.1", features = ["web", "router"] }`
+dioxus = { version = "0.5.1", features = ["web", "router"] }
 ```
 
-## create a new mock component (profile)
+## Create a new mock component (profile)
 ...and refactor your App component (call it e.g. "Home" instead)
 
 ```rust
