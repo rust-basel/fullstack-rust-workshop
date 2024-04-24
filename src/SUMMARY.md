@@ -12,4 +12,5 @@
 - [Add Routing](./add_routing.md)
 - [Database unique lists](./unique_lists.md)
 - [Backend unique lists](./backend_unique_lists.md)
-- [Frontend load unique list](./frontend_unique_lists.md)
+- [Frontend: new Endpoints](./frontend_new_endpoints.md)
+- [Frontend: Load or Create - that is the Question](./frontend_load_or_create.md)

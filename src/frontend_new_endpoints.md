@@ -1,10 +1,8 @@
-# Frontend load unique list
+# Frontend: new Endpoints
 
-In this final chapter we will do the follwing:
+In this chapter we will do the follwing:
 - Creating a helper to create a new list
-- Adapter our controller functions to the new routes, we defined in the backend
-- Writing a component to either create, or load a list.
-- Route to our list after creating or loading one
+- Adapt our controller functions to the new routes, we defined in the backend - so we can build again :)
 
 ## Creating a helper to create a new list
 
@@ -257,3 +255,12 @@ fn ItemDeleteButton(
 }
 ```
 
+After you changed these components - your frontend should build again by the way :) You can test it with again with 
+
+```sh
+cargo make --no-workspace dev
+```
+
+In the next chapter we will add a new component, that creates a new list or gets a list uuid by user input.
+
+You almost made it :) hang on!
