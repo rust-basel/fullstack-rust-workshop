@@ -122,3 +122,85 @@ pub fn Layout() -> Element {
 ```
 
 If you now run all the code - you can create a new list with a click of a button - and it will route you to the page with the freshly created list.
+
+## Load a list from given Uuid
+
+In this chapter, we create a form. Here the user has to input a given uuid. Then we forward with the given uuid.
+Let's expand our `LoadOrCreateList` our component! As you already have seen how to create a form - we fast forward.
+
+What we've changed:
+- We have a input form where we can input a string.
+- That string get copied to our `list_uuid` Signal.
+- On clicking the `Load existing list` button we read the stored `list_uuid` and route to our Home again with this uuid. 
+
+```rust
+#[component]
+pub fn LoadOrCreateList() -> Element {
+    let nav = use_navigator();
+    let mut list_uuid = use_signal(|| "".to_string());
+
+    let onloadsubmit = move |_| {
+        spawn({
+            async move {
+                let uuid_value = list_uuid.read().clone();
+                if !uuid_value.is_empty() {
+                    nav.push(Route::Home {
+                        list_uuid: uuid_value,
+                    });
+                }
+            }
+        });
+    };
+
+    let on_create_list_click = move |_| {
+        let nav = nav.clone();
+        spawn({
+            async move {
+                let response = create_list().await;
+                if let Ok(created_list) = response {
+                    nav.push(Route::Home {
+                        list_uuid: created_list.uuid,
+                    });
+                }
+            }
+        });
+    };
+
+    rsx! {
+        div{
+            class: "grid place-content-evently grid-cols-1 md:grid-cols-2 w-full gap-4",
+            div {
+                class: "card glass min-h-500 flex flex-col content-end gap-4 p-4",
+                button{
+                    class: "btn btn-primary",
+                    onclick: on_create_list_click,
+                    "Create new List"
+                }
+            }
+            div { class: "card glass min-h-500",
+                form {
+                    onsubmit: onloadsubmit,
+                    div {
+                        class: "flex flex-col gap-4 p-4",
+                        input{
+                            class:"input input-bordered",
+                            r#type:"text",
+                            placeholder:"Enter UUID here...",
+                            id: "uuid",
+                            name: "uuid",
+                            oninput: move |e| list_uuid.set(e.data.value())
+                        }
+                        button{
+                            class: "btn btn-primary",
+                            r#type: "submit",
+                            "Load existing List"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+Nice! You've done it! :) If you want - you can stay for some styling.
