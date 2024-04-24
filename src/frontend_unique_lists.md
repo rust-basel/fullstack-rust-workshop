@@ -86,3 +86,157 @@ pub async fn post_item(
     Ok(response)
 }
 ```
+
+## Propagate the list uuid top down
+
+Now we need the list's uuid everywhere, we fetch data from the backend. So somehow we need a uuid for this.
+Do you have a guess? 
+
+Go to your Home `component` and add a `list_uuid` signal there. For now we hardcode the value to be `9e137e61-08ac-469d-be9d-6b3324dd20ad` (the first existing list in our backend - if you remember ;)).
+The idea now: forward down this `list_uuid` to all components, that need a `list_uuid`, which are the `ShoppingList` and the `ItemInput` components.
+
+```rust
+#[component]
+pub fn Home() -> Element {
+    let list_uuid = use_signal(|| "9e137e61-08ac-469d-be9d-6b3324dd20ad");
+    let change_signal = use_signal(|| ListChanged);
+    rsx! {
+        ShoppingList{list_uuid, change_signal}
+        ItemInput{list_uuid, change_signal}
+    }
+}
+```
+
+Of course, those components have to be adjusted in their parameters (or so called: Component `props`). Go ahead and change the props of those. Then you can use the `list_uuid` in the requests fired by the hooks used in the components. The easiest way to accomplish this is forwarding the signal, and read it inside the component.
+
+`ShoppingListItemComponent`
+```rust
+#[component]
+fn ShoppingListItemComponent(
+    display_name: String,
+    posted_by: String,
+    list_uuid: String,
+    item_id: String,
+    change_signal: Signal<ListChanged>,
+) -> Element {
+    rsx! {
+        div {
+            class: "flex items-center space-x-2",
+            p {
+                class: "grow text-2xl",
+                "{display_name}"
+            }
+            span {
+                "posted by {posted_by}"
+            }
+            ItemDeleteButton {list_uuid, item_id, change_signal}
+        }
+    }
+}
+```
+
+`ItemDeleteButton`
+```rust
+#[component]
+fn ItemDeleteButton(
+    list_uuid: String,
+    item_id: String,
+    change_signal: Signal<ListChanged>,
+) -> Element {
+    let onclick = move |_| {
+        spawn({
+            let list_uuid = list_uuid.clone();
+            let item_id = item_id.clone();
+            async move {
+                let response = delete_item(&list_uuid, &item_id).await;
+                if response.is_ok() {
+                    change_signal.write();
+                }
+            }
+        });
+    };
+
+...
+}
+
+```
+
+`ShoppingList`
+```rust
+#[component]
+pub fn ShoppingList(list_uuid: Signal<String>, change_signal: Signal<ListChanged>) -> Element {
+    let items_request = use_resource(move || async move {
+        change_signal.read();
+        get_items(list_uuid.read().as_str()).await
+    });
+
+    match &*items_request.read_unchecked() {
+        Some(Ok(list)) => rsx! {
+            div { class: "grid place-items-center min-h-500",
+                ul {
+                    class: "menu bg-base-200 w-200 rounded-box gap-1",
+                    for i in list {
+                        li {
+                            key: "{i.uuid}",
+                            ShoppingListItemComponent{
+                                display_name: i.title.clone(),
+                                posted_by: i.posted_by.clone(),
+                                list_uuid,
+                                item_id: i.uuid.clone(),
+                                change_signal
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        Some(Err(err)) => {
+            rsx! {
+                p {
+                    "Error: {err}"
+                }
+            }
+        }
+        None => {
+            rsx! {
+                p {
+                    "Loading items..."
+                }
+            }
+        }
+    }
+}
+```
+
+`ItemInput`
+```rust
+#[component]
+pub fn ItemInput(list_uuid: Signal<String>, change_signal: Signal<ListChanged>) -> Element {
+    let mut item = use_signal(|| "".to_string());
+    let mut author = use_signal(|| "".to_string());
+
+    let onsubmit = move |_| {
+        spawn({
+            async move {
+                let item_name = item.read().to_string();
+                let author = author.read().to_string();
+                let response = post_item(
+                    list_uuid.read().as_str(),
+                    PostShopItem {
+                        title: item_name,
+                        posted_by: author,
+                    },
+                )
+                .await;
+
+                if response.is_ok() {
+                    change_signal.write();
+                }
+            }
+        });
+    };
+
+...
+}
+```
+
