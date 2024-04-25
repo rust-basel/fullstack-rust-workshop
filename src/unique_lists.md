@@ -5,7 +5,7 @@ In the end you want share a list right? So we have to extend our database model.
 Instead of having only a `HashMap` of items, let's have a `HashMap` of `HashMap` of items (that sounds already bad - but is more than sufficient for our workshop!)
 This way we can have unique lists - and a list is identifiable with its `list_uuid`.
 
-## Wrap a HashMap with a new struct
+## Wrap a `HashMap` with a new `struct`
 
 Go to your `database.rs` module and create a new struct. This is a list in our sense, that maps `item uuids` to `ShoppingItem`s.
 
@@ -45,7 +45,7 @@ impl Default for ShoppingList {
 
 If you never came accross the `into()` method: It transform this `[]`-array into the type of `Self`, which is a `HashMap<String, ShoppingItem>`.
 
-## Change InMemoryDatabase to wrap HashMap<String, ShoppingList>
+## Change `InMemoryDatabase` to wrap `HashMap<String, ShoppingList>`
 
 In this chapter we create the outer HashMap - which we already have.
 Change our existing `InMemoryDatabase`. 
@@ -72,7 +72,7 @@ impl Default for InMemoryDatabase {
 
 We now changed the members of our `InMemoryDatabase`. Let's change our API next.
  
-## Change the InMemoryDatabase API and implementation
+## Change the `InMemoryDatabase` API and implementation
 
 As we are going to have more than one lists - when we for instance want to receive an item, we also have to know from which list we want to receive that item.
 So all our current APIs of the `InMemoryDatabase` now also need a `list_uuid` to an `item_uuid`.

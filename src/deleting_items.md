@@ -22,7 +22,7 @@ In order to use symbols across modules (structs and functions), you have to make
 
 ## Creating a helper function to delete items
 
-Like in the previous examples (e.g. adding an item) we now add another helper function to delete items. Go to your new `controllers.rs` module in the frontend crateand create an async function `delete_item`, which takes an item_id, a `&str` as input.
+Like in the previous examples (e.g. adding an item) we now add another helper function to delete items. Go to your new `controllers.rs` module in the frontend crate and create an async function `delete_item`, which takes an item_id, a `&str` as input.
 
 ```rust
 pub async fn delete_item(item_id: &str) -> Result<(), reqwest::Error> {
@@ -35,11 +35,11 @@ pub async fn delete_item(item_id: &str) -> Result<(), reqwest::Error> {
 }
 ```
 
-In this case we are just interested, if the deletion was ok. If there would happen an error, the `?`-Operator would return a `reqwest::Error`.
+In this case we are just interested if the deletion was ok. If an error happens, the `?`-Operator returns a `reqwest::Error`.
 
 ## Create the component
 
-Let's add a component to an already existing component! We plan to create a button, which is ontop of our item in the list. So if you click the button on the respective item - this item then gets deleted.
+Let's add a component to an already existing component! We plan to create a button, which is on top of our item in the list. So if you click the button on the respective item - this item then gets deleted.
 
 Go ahead to your `components.rs` module and add a component with a button with a cross on it:
 

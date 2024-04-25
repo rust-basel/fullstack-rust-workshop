@@ -151,7 +151,7 @@ Hop to your `frontend` crate.
 First let's add some logic to fetch data from the backend. We can do this by using the `reqwest` crate (a https client library). We also need to add our 
 `model crate`.
 
-```rust
+```sh
 cargo add reqwest -F json
 cargo add model --path ../model
 ```
@@ -184,7 +184,7 @@ But instead of checking this Result with another `?`-operator, we just return th
 `Dioxus` is a component based web framework - it is comparable to e.g. `React`, where you nest components into one another.
 Also, if one of the properties in a component changes, the components will be re-rendered.
 
-So let's create a component, that displays a single item - and then embedd this item component into a list, displaying all components
+So let's create a component, that displays a single item - and then embed this item component into a list, displaying all components
 
 ```rust
 #[component]
@@ -248,7 +248,7 @@ fn ShoppingList() -> Element {
 }
 ```
 The `use_resource` is one of `Dioxus` [hooks](https://dioxuslabs.com/learn/0.5/reference/hooks). Hooks help you to have stateful functionality in your components.
-`use_resource` especially let's you run async closures and returns you a result. In this case we `match` the result
+`use_resource` especially lets you run async closures and return a result. In this case we `match` the result
 of the close. On the first render, there will be no data available. So matching will result in a `None`. The component will be re-rendered,
 once the future is finished and the result will be `Some(...)`thing. 
 
@@ -286,7 +286,7 @@ So the `cors` logic is applied to all routes we already wrote.
 
 Therefore add the `tower-http` crate.
 
-```rust
+```sh
 cargo add tower-http -F cors
 ```
 
@@ -314,7 +314,7 @@ For proper hot reloading, you need the line
 
 `const _STYLE: &str = manganis::mg!(file("public/tailwind.css"));`
 
-in the frontend main, as well as an explicit Dioxus.toml 
+in the frontend main, as well as an explicit `Dioxus.toml` file. 
 (so far we have worked with implicit defaults, such as the style property).
 The `style` property has to be set to `[]` for manganis to work.
 

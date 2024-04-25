@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-If you did not already, install the dioxus cli:
+If you have not done so already, install the dioxus cli:
 
 ```sh
 cargo install dioxus-cli

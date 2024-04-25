@@ -56,7 +56,7 @@ pub async fn delete_item(list_id: &str, item_id: &str) -> Result<(), reqwest::Er
 }
 ```
 
-As the other functions are kind of straight forward - go ahead and change the other functions, which spoke against the "old" REST api.
+As the other functions are kind of straightforward - go ahead and change the other functions, which spoke against the "old" REST api.
 
 ```rust
 pub async fn get_items(list_id: &str) -> Result<Vec<ShoppingListItem>, reqwest::Error> {
