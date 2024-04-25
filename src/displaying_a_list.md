@@ -307,3 +307,16 @@ let app = Router::new()
 ```
 
 Note: Do not use `permissive` in production - but choose a cors policy, that fits your setting in production.
+
+### CSS hot-reloading
+You might have noticed so far that you had to refresh or recompile for tailwind classes to refresh on the screen.
+For proper hot reloading, you need the line
+
+`const _STYLE: &str = manganis::mg!(file("public/tailwind.css"));`
+
+in the frontend main, as well as an explicit Dioxus.toml 
+(so far we have worked with implicit defaults, such as the style property).
+The `style` property has to be set to `[]` for manganis to work.
+
+It is a good indicator of how mature a frontend framework is in 2024, if it provides reliable tailwind hot reloading support 
+out of the box or with a plugin or two. Dioxus is surprisingly far, but the reloading is not fully reliable yet.

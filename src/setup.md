@@ -45,6 +45,11 @@ If you run `cargo build` both, the frontend and your backend crate should be bui
 
 ## Install Dioxus CLI
 
+Dioxus comes with a CLI that wraps around cargo, for providing features such as hot reloading and reading configuration
+from a `Dioxus.toml` file, if one is present.
+
+We can just install it system-wide with cargo:
+
 ```sh
 cargo install dioxus-cli
 ```
