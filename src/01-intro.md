@@ -1,3 +1,8 @@
+# Authors
+Yasin Gündüz (Chapters 1,2,3,4,5,6,7,8,9,11,12,13,14)
+
+Roland Brand (Chapter 10 + a few small additions)
+
 # Intro
 
 Today we will build a **shopping list**, that you can edit and share with your friends! So you never have to write one
