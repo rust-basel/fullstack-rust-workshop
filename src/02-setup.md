@@ -11,7 +11,7 @@ For the setup we need as prerequisites:
 
 ## Project structure 
 
-We will have everything in the same repository. So the backend and the frontend are easier to sync.
+We will have everything in the same repository. So the backend and the frontend are easier to keep in sync for code updates.
 
 First start with a directory, let's call it *fullstack-workshop* and hop into this directory (and init git).
 
@@ -23,7 +23,7 @@ git init
 
 After this one, create two new cargo projects within this directory.
 
-```
+```sh
 cargo new frontend
 cargo new backend
 ```

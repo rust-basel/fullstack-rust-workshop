@@ -7,6 +7,8 @@ If you have not done so already, install the dioxus cli:
 ```sh
 cargo install dioxus-cli
 ```
+This is a wrapper around cargo and installed globally, since it can also be used to init new projects.
+
 ## First Hello World
 
 Our dioxus part will be the *frontend* directory.
@@ -65,17 +67,17 @@ pub fn App() -> Element {
 Great. Now that our web hello world is running, let's add some styling to it.
 Of course no one likes raw `CSS`, which is why we are going to add [Tailwindcss](https://tailwindcss.com/), which has
 some sane defaults and add a tailwind component library to it. It's called [DaisyUi](https://daisyui.com/).
-You define the style of your dom components directly in the `rsx` macro. No need for an extra css file, you have to maintain.
+You define the style of your DOM components directly as classes in the `rsx` macro. No need for an extra css file, you have to maintain.
 Tailwind will watch the style classes, you define within your markdown and will automatically generate the correct css for you.
 
-Daisyui is a tailwind component library. As tailwind itself is quite mighty, daisyui abstracts tailwind and make styling easy having ready to use components
+Daisyui is a tailwind component library. As tailwind itself is quite mighty, DaisyUI enhances tailwind and make styling easy having ready to use components
 like buttons, navbars, etc.
 
 ### Installing dependencies
 
 First we go ahead and install our dependencies.
-We want all configuration files top-level. So go back, where your top-level Cargo.toml is
-and initialize npm there. Then install tailwindcss for development and initialize tailwind.
+We want all configuration files top-level. So go back, where your top-level `Cargo.toml` is
+and initialize `npm` there. Then install `tailwindcss` for development and initialize tailwind.
 
 ```sh
 cd ..
@@ -110,10 +112,12 @@ As last, go ahead and install daisyUi.
 npm install -D daisyui@latest
 ```
 Sorry for installing so many dependencies. And welcome to the npm world! :)
+However, these will only be development dependencies and will run on your machine only, never on the server or client.
+Only the CSS resulting from build is served.
 
 ### Changing the configuration files
 
-Now that we have all dependencies, let's change the configuration, so we already have the final setup (You do not have to change it later anymore).
+Now that we have all dependencies, we need to adapt the configuration to let tailwind know where to look for classes.
 
 Changes to `tailwind.config.js` so it will watch the rsx classes in our .rs files:
 
@@ -146,7 +150,7 @@ first cd into the frontend crate
 cd frontend
 ```
 
-then add a `input.css`:
+then add a `input.css` with the following contents:
 
 ```css
 @tailwind base;

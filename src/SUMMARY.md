@@ -14,3 +14,7 @@
 - [Backend unique lists](./12-backend_unique_lists)
 - [Frontend: new Endpoints](./13-frontend_new_endpoints)
 - [Frontend: Load or Create - that is the Question](./14-frontend_load_or_create)
+
+# Authors
+Yasin Gündüz (Chapters 1,2,3,4,5,6,7,8,9,11,12,13,14)
+Roland Brand (Chapter 10 + a few small additions)
