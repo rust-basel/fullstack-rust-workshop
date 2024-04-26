@@ -307,15 +307,81 @@ let app = Router::new()
 
 Note: Do not use `permissive` in production - but choose a cors policy, that fits your setting in production.
 
+### Dioxus.toml
+
+Inside our `frontend` crate, we now also want something called a `Dioxus.toml`. It's a configuration file for dioxus, that is read by the dioxus-cli.
+Go ahead and create a `Dioxus.toml` with sane defaults.
+
+`Dioxus.toml`
+```toml
+[application]
+
+# App (Project) Name
+name = "workshop-2"
+
+# Dioxus App Default Platform
+# desktop, web, mobile, ssr
+default_platform = "web"
+
+# `build` & `serve` dist path
+out_dir = "dist"
+
+# resource (public) file folder
+asset_dir = "public"
+
+[web.app]
+
+# HTML title tag content
+title = "Shopping list"
+
+[web.watcher]
+
+# when watcher trigger, regenerate the `index.html`
+reload_html = true
+
+# which files or dirs will be watcher monitoring
+watch_path = ["src", "public"]
+
+# uncomment line below if using Router
+# index_on_404 = true
+
+# include `assets` in web platform
+[web.resource]
+
+# CSS style file
+style = []
+
+# Javascript code file
+script = []
+
+[web.resource.dev]
+
+# serve: [dev-server] only
+
+# CSS style file
+style = []
+
+# Javascript code file
+script = []
+```
+
+Here you can define other properties, like a custom css file or custom js scripts to integrate. But we do not need this for now. Only that you have seen it :)
+
 ### CSS hot-reloading
+
 You might have noticed so far that you had to refresh or recompile for tailwind classes to refresh on the screen.
-For proper hot reloading, you need the line
+For proper hot reloading, you need `manganis`. This is a crate provided by Dioxus to make a e.g. a style file available for css hot-reloading. 
+
+```sh
+cargo add manganis
+```
+
+Add this line below in the `main.rs` of your `frontend` crate.
 
 `const _STYLE: &str = manganis::mg!(file("public/tailwind.css"));`
 
-in the frontend main, as well as an explicit `Dioxus.toml` file. 
 (so far we have worked with implicit defaults, such as the style property).
-The `style` property has to be set to `[]` for manganis to work.
+The `style` property has to be set to `[]` for manganis to work in our `Dioxus.toml`.
 
 It is a good indicator of how mature a frontend framework is in 2024, if it provides reliable tailwind hot reloading support 
 out of the box or with a plugin or two. Dioxus is surprisingly far, but the reloading is not fully reliable yet.
