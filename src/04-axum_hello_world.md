@@ -93,7 +93,7 @@ This will just echo the json. But you get the idea. We also need to add this to 
 Add it as a `post` (you could also use `get`, but idiomatically json payloads are send with either `patch`, `put` or `post`).
 
 ```rust
- use axum::routing::post;
+use axum::routing::post;
 ```
 
 ```rust
