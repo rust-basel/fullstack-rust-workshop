@@ -1,11 +1,11 @@
 # Displaying a list
 
-Now we are going to connect our to parts!
+Now we are going to connect our two components, the dioxus frontend and the axum backend!
 We are going to display a list in the frontend, which is served by our backend.
 
 ## Shared Models
 
-As we now connect our front- and backend, it makes sense to share the data models (otherwise we have to define those in both crates).
+As we now connect our front- and backend, it makes sense to share the data models (otherwise we have to define and sync those in both crates).
 On the backend we need to serialize to json. On the frontend we need to deserialize from json.
 
 So go ahead top-level and create a new crate. As this is a library, we create it with the `--lib` tag.
@@ -14,7 +14,7 @@ So go ahead top-level and create a new crate. As this is a library, we create it
 cargo new --lib model
 ```
 
-In this crate we will put all of our models, that are shared between our front- and backend.
+In this crate we will put all of our models, that are shared between our front- and backend. They will correspond to the json data you can see in your network tab.
 Go into this new model crate and add `serde` to this crate
 
 ```sh
@@ -47,8 +47,7 @@ members = [
 ```
 
 ## Makefile
-
-Let's first introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
+With more and more moving parts, let's first introduce a `Makefile.toml` which will make our life much easier. With `cargo-make`.
 We can execute our three commands concurrently with one command, which is:
 - serving our backend
 - serving our frontend
@@ -278,11 +277,11 @@ Great! Now you got the basics! Let's head to our backend to create a rudimentary
 
 It may happen, that your browser denies fetching data from your backend because of Cross-Origin Resource Sharing (CORS).
 For security reasons browser restrict cross-origin HTTP requests. Your server has to explicitly tell the browser, which 
-sources, or oirigins, are allowed to fetch the server's resources.
+sources, or origins, are allowed to fetch the server's resources.
 For more info have a read at the [MDN Web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
 
-In order to tell our server, that it is ok to fetch data from it we can add a `cors` layer to our `Router`. That `layer` is another middleware.
-So the `cors` logic is applied to all routes we already wrote.
+In order to tell our server that it is ok to fetch data from it, we can add a `cors` layer to our `Router`. That `layer` is another middleware.
+So the `cors` logic is applied to all routes we already wrote, and the server sends appropriate CORS headers with each response.
 
 Therefore add the `tower-http` crate.
 

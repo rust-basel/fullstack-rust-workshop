@@ -1,6 +1,6 @@
 # Axum Hello World
 
-Let's start building our backend!
+Let's start building our HTTP backend!
 
 ## Dependencies
 
@@ -17,7 +17,7 @@ cargo add tower-http -F cors
 
 [Serde](https://serde.rs/) is Rusts de facto standard serialization library, so we can easily receive and send `json` payloads and map them to Rust models.
 
-[Tokio](https://tokio.rs/) is the most used async runtime.
+[Tokio](https://tokio.rs/) is the most popular async runtime (and required by axum, which runs within tokio)
 
 ## Add a small webservice
 
@@ -49,11 +49,11 @@ The `Router` lets you define the endpoints of your webservice. You can attach di
 Middlewares are logical units, that are shared across different routes. One example would be an `Auth` middleware.
 
 The most basic function of axum with a router is **mapping requests to handlers**. A handler is anything that
-implements `IntoResponse`, and the most trivial example of this is a String, as in the line `format!("Hello {name}")`.
+returns a value that implements `IntoResponse`, and the most trivial example of this is a String, as in the line `format!("Hello {name}")`.
 
 After adding those few lines run.
 
-```rust
+```sh
 cargo run
 ```
 
@@ -78,7 +78,6 @@ struct Workshop {
 ```
 
 Now this struct `Workshop` is automatically de- and serializable. The [Procedural Macro](https://doc.rust-lang.org/reference/procedural-macros.html) implements this for us!
-
 
 If we now want to receive and respond this with Json, we have to add a fitting handler (function) to it.
 
@@ -116,5 +115,5 @@ curl -i \
     http://localhost:3001/your-route
 ```
 
-Whooray! You got the basic building block ready. The next steps will now join our frontend and our backend. Let's 
+Whooray! You got the basic building block ready. The next steps will take care fo letting our frontend backend talk to each other. Let's 
 display a list of items from our backend in the frontend in the next chapter.
