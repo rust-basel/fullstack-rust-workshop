@@ -97,12 +97,10 @@ Add it as a `post` (you could also use `get`, but idiomatically json payloads ar
 ```
 
 ```rust
- ...
-    let app = Router::new()
-        .route("/", get(hello_world))
-        .route("/:name", get(hello_name))
-        .route("/your-route", post(workshop_echo));
- ...
+let app = Router::new()
+    .route("/", get(hello_world))
+    .route("/:name", get(hello_name))
+    .route("/your-route", post(workshop_echo));
 ```
 
 You can test your json endpoint with the following curl call, to check whether you added it correctly ;).
