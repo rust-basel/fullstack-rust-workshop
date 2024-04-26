@@ -14,7 +14,8 @@ But what exactly should our database be capable of?
 - (Update an existing item)
 - Delete an item
 
-This translates directly to Create-Read-Update-Delete (`CRUD`). Also, for simplicity, we do not use update here. We only delete, create or get items
+This translates directly to Create-Read-Update-Delete (`CRUD`). Also, for simplicity, we do not use update here. 
+We only delete, create or get items. Deleting is therefore the same as checking of an item.
 
 ## Create a database module
 
@@ -58,7 +59,7 @@ impl InMemoryDatabase {
 }
 ```
 
-Let's also add some starting items, when creating a default database
+Let's also add some fixture items, when creating a default database
 
 ```rust
 impl Default for InMemoryDatabase {
@@ -89,8 +90,8 @@ impl Default for InMemoryDatabase {
 
 ## Adding the database to our axum backend
 
-Adding this database is farely simple with axums `Router` builder.
-Go to into the `backends` main function, init a default database and use it inside the router.
+Adding this database is fairly simple with axums `Router` builder.
+Go inside the `backends` main function, init a default database and use it inside the router.
 
 Before we can use our database, we have to make sure that there is no data race. Or - the compiler checks that for us.
 
@@ -121,5 +122,7 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 ```
+
+This allows to access the state (db) from each handler function by using it as function parameters.
 
 In the next chapter, we will write `controllers` functions for update, read and delete endpoints, where we use the database.

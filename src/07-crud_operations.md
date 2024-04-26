@@ -84,7 +84,7 @@ pub async fn get_items(State(state): State<Database>) -> impl IntoResponse {...}
 
 Now you can access the database, that you've already injected with the `with_state(...)` method of the `Router`.
 
-But first, got to your `database.rs` module and add a new method to your `impl InMemoryDatabase` to return all items at once. 
+But first, go to your `database.rs` module and add a new method to your `impl InMemoryDatabase` to return all items at once. 
 
 ```rust
   pub fn as_vec(&self) -> Vec<(String, ShoppingItem)> {
@@ -95,7 +95,8 @@ But first, got to your `database.rs` module and add a new method to your `impl I
   }
 ```
 
-For this, the database item must be clone, so add this also to the item. Morover the struct itself and its members must be public,
+For this, the database item must be `Clone`, which is Rust lingo for implementing the `Clone` trait, which we can do automatically for most types by deriving
+the implementation with a `#[derive]` attribute. So add this also to the item. Moreover, the struct itself and its members must be public,
 so one can use it outside the `database.rs` module.
 
 ```rust
@@ -131,7 +132,7 @@ If you now execute all our do-all command `cargo make --no-workspace dev`, you g
 
 ## Creating things
 
-In order to add new items to the lists, we have to implement a controller enabling a `POST` with a `json` paylod. If you remember, you did this one
+In order to add new items to the lists, we have to implement a controller enabling a `POST` with a `json` payload. If you remember, you did this one
 in the beginning.
 
 
@@ -195,13 +196,13 @@ pub async fn add_item(
 }
 ```
 
-There is happening a lot. Let's go through it.
+A lot is happening there. Let's go through it.
 
 The `State` extractor fetches your database, you injected in you main. We need this to write to the database and insert a new item.
-Then the `Json` extractor deserializes your recently created `PostShopItem`. The cool thing here: If the request is not correct - i.e. the client
-posts some other json the expected, the controller will automatically return a 400 code for invalid input data.
+Then the `Json` extractor deserializes your recently created `PostShopItem`. The cool thing here: If the request is not valid - i.e. the client
+posts some other json than expected, the controller will automatically return a 400 code for invalid input data it cannot be deserialized into the specified model.
 
-In the body we create the datamodel, we have in our database. Therefore we transform the json payload to our `ShoppingItem` type.
+In the body we create the data model we have in our database. For this, we manually map the `PostShopItem` to a `ShoppingItem` type.
 Then we create a universally unique identifier with the `Uuid` crate (There are different uuid version - we just pick v4). 
 
 Then there is rust syntax, the `let-else` statement, you probably did not see before. It binds the Ok value out of the Result coming from the `state.write()` statement.
@@ -209,7 +210,7 @@ That is, if we get the lock to write - then we proceed. Otherwise, the `else` pa
 
 If we can write, we then insert the new item with the generated uuid and respond with the newly generated item as a json serialized `ShoppingListItem`.
 
-The last thing we have to do, is now add this controller as `POST` callback into our axum `Router`.
+The last thing we have to do, is now register this controller as `POST` handler into our axum `Router`.
 Go ahead an do that and do not forget the use statement on top:
 
 ```rust
@@ -235,13 +236,13 @@ curl -i \
     http://localhost:3001/items
 ```
 
-After adding the item(s), reload the our frontend, that is running on `localhost:8080` (if you ran the `all-do` cargo make).
+After adding the item(s), reload the frontend, that is running on `localhost:8080` (if you ran the `all-do` cargo make).
 
-Great - now you know how to add items! Let's fast forward and add the code to also delete items.
+Great - now you know how to add items! Let's fast-forward and add the code to also delete items.
 
 ## Deleting things
 
-Deletion is kind of the same as creation. We also need writeable access to the databse. But we do not have to accept a json payload, but a uuid.
+Deletion is similar to creation. We also need writeable access to the database. But we do not have to accept a json payload, but a uuid.
 The only thing that changes is the extraction of a `Path` parameter. But you did that already in the axum hello world chapter.
 
 Our deletion controller:

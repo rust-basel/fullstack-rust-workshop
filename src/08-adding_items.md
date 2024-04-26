@@ -107,7 +107,7 @@ If you run our `cargo make --no-workspace dev`, then you can already see the fin
 
 ## OnSubmit Action - posting items
 
-Currently we do nothing - except changing the state of the two `hooks`. Let's add a closure, that posts items to our backend.
+Currently, we do nothing on submit - except changing the state of the two `hooks`. Let's add a closure, that posts items to our backend.
 For this we will use `spawn`. This allows us to run async function inside our components, which are fired once.
 
 ```rust
@@ -130,7 +130,7 @@ As we stored the item as well as the author value inside hooks (our components s
 For now we just ignore the result of our http call for simplicity.
 
 If you now run everything you are able to create new items. The downside: You do not recognize that you already post items, as the list 
-is not getting updated. But if you open your browser's developer settings (usually `f12`), you will see in your network settings, that you post items.
+is not getting updated. But if you open your browser's developer settings (usually `f12`), you will see in your network tab, that you post items.
 
 But let us fix the list in the next step.
 
@@ -148,7 +148,7 @@ struct ListChanged;
 In our case a `zero-sized` object is sufficient.
 
 The idea:
-- When we post an item - and the post request has been successfull - then we write to that signal.
+- When we post an item - and the post request has been successful - then we write to that signal.
 - Our list display subscribes this signal. Because we write to it, anything that depends on it (i.e. our `use_resource` hook), will be executed again.
 
 In order that both components `ItemInput` and `ShoppingList` both have access to that signal, we have to `hoist` (lifting the state up) the state.
@@ -204,7 +204,8 @@ Change it and check the result, if it is ok. If it is ok, we `write` the signal 
   }
 ```
 
-But that is sufficient enough, that other components, that subscribe to that signal (automatically when you have a `read`), to re-render or execute some logic attached to it.
+But that is sufficient for re-rendering other components subscribed to that signal (automatically when you have a `read`).
+Or to execute some logic on subscribed components withing hooks.
 
 ### Reading the signal
 
@@ -219,7 +220,7 @@ Now let's subscribe to that signal by `read`ing it inside our `ShoppingList` com
 
 That is all you need to do in order let your components *communicate* with each other.
 
-If you did it correctly (if not - have a look at the solution) - when you now add a new item, the list is fetched afterwards and the list updates.
+If you did it correctly, the list is fetched and updates just after you add a new item (if not - have a look at the solution) 
 
 Great! :) 
 
