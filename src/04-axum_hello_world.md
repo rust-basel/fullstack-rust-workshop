@@ -117,3 +117,12 @@ curl -i \
 
 Whooray! You got the basic building block ready. The next steps will take care fo letting our frontend backend talk to each other. Let's 
 display a list of items from our backend in the frontend in the next chapter.
+
+# Axum alternatives
+There are many other Rust server frameworks.
+Axum is still rather new, and seemingly the 'bright star' in this universe. It is extremely fast, because of its simplicity and direct coupling to tokio.
+Documentation and adaptation in production are still lagging somewhat, but with the current popularity, these things are bound to catch up too.
+The most popular framework probably still is `actix-web`, which is also rather lightweight and revolves around the actor pattern.
+The most full-fledged framework would be`rocket`, with very robust features and tools. While axum is more like expressjs, rocket is more comparable to Ruby on Rails.
+
+Speaking about rails, there is also `loco`, a framework layer built on top of axum, with the goal of being super small and simple, perfect for one-(wo)man teams.

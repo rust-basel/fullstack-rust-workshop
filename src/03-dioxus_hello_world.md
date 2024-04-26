@@ -205,3 +205,9 @@ If everything worked our, you should have a page that looks like this:
 You still might need some hard refreshes or server restarts with `CTRL + C` and `dx serve --hot-reload` from time to time,
 but we will refine the hot reloading setup later on.
 All the commands, you have to run manually now will be put in a nice package that spins everything up with one command.
+
+# Dioxus Alternatives
+Dioxus is not the only framework of its kind. There is `leptos`, which is a close competitor which seems to have a narrower focus and seemingly more production use.
+And there is `yew`, which has been around for years, and is without a doubt production-ready and battle-tested. Compared with the newer generation, you
+have to fight around with lifetimes withing your dependency tree a lot. Dioxus is able to circumevent this with clever types, and deferring a few lifetime checks to runtime.
+This leads to a developer experience comparable to react (except for the tools, of course).
