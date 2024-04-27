@@ -11,6 +11,8 @@ Go to our `main.rs` in the backend - and change the routes from:
 - `/items` to `/list/:list_uuid/items`
 - `/items/:uuid` to `/list/:list_uuid/items/:item_uuid`
 
+Each item is now parametrized by a list, or a subresource of the list.
+
 ```rust
 let app = Router::new()
     .route("/list/:list_uuid/items", get(get_items).post(add_item))
@@ -98,7 +100,7 @@ Great! Now we adapted our existing controllers and already use the new `list_uui
 
 Now that we adapted the existing routes, let's add a new one to create a fresh list.
 As we only have to request a `/list` endpoint without to provide any data - we can get away with a `GET` endpoint.
-Usually, when you want to create new ressources server side, you would supply a `post` with some data. But for our case we do not need this.
+Usually, when you want to create new resources server side, you would supply a `post` with some data. But for our case we do not need this.
 
 What we need though is a response for this endpoint, as we want to know the `list_uuid` of the newly created list.
 
@@ -111,7 +113,7 @@ pub struct CreateListResponse {
 }
 ```
 
-This model will also be deserialized in the frontend later. So also put a Deserialize from `serde` ontop of the struct.
+This model will also be deserialized in the frontend later. So also put a Deserialize from `serde` on top of the struct.
 
 Go ahead an create a new async function in the `controller.rs` module in our `backend` crate.
 
@@ -126,11 +128,11 @@ pub async fn create_shopping_list(State(state): State<Database>) -> impl IntoRes
 }
 ```
 
-The last thing, that is needed, is to put the `create_shopping_list` into our `Router`. You know the drill!
+The last thing remaining is to put the `create_shopping_list` into our `Router`. You know the drill!
 Add it to the router with a `/list` route - fetched via a `GET`.
 
 ```rust
 .route("/list", get(create_shopping_list))
 ```
 
-Your are getting somewhere! :). Let's hop on to change the `frontend` also, to get/post and delete with the new routes, we just created.
+We are getting somewhere! :). Let's hop on to change the `frontend` also, to get/post and delete with the new routes, we just created.

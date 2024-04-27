@@ -1,6 +1,6 @@
 # Frontend: new Endpoints
 
-In this chapter we will do the follwing:
+In this chapter we will do the following:
 - Creating a helper to create a new list
 - Adapt our controller functions to the new routes, we defined in the backend - so we can build again :)
 
@@ -56,7 +56,7 @@ pub async fn delete_item(list_id: &str, item_id: &str) -> Result<(), reqwest::Er
 }
 ```
 
-As the other functions are kind of straightforward - go ahead and change the other functions, which spoke against the "old" REST api.
+As the other functions are kind of straightforward - go ahead and change the other functions that are still tuned to the "old" REST api.
 
 ```rust
 pub async fn get_items(list_id: &str) -> Result<Vec<ShoppingListItem>, reqwest::Error> {

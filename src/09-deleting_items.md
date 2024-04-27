@@ -8,7 +8,7 @@ shopping list.
 As you already see, we have `#[components]` as well as helper functions in our code base. It would make sense to put all components inside a 
 components module and helper functions to fetch and post (and later delete) items into a util/controller module.
 
-Go ahead an put all Components and our `ListChanged` struct into a `components.rs` module, as well as helper functions for get- and posting data to our backend into 
+Go ahead an put all Components and our `ListChanged` struct into a `components.rs` module, as well as helper functions for getting and posting data to our backend into 
 a `controllers.rs` module.
 
 Do also not forget to put the moved functions into the `main.rs`:
@@ -93,7 +93,7 @@ fn ShoppingListItemComponent(display_name: String, posted_by: String) -> Element
 
 ## Delete item onclick
 
-We currrently do nothing. Let's implement the onclick action - so when we click the item, a delete request is send to our backend.
+We currrently do nothing. Let's implement the onclick action - so when we click the item, a delete request is sent to our backend.
 
 At the top of your `components.rs` module:
 

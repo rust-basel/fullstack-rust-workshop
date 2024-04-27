@@ -27,7 +27,7 @@ pub fn Home(list_uuid: String) -> Element {
 }
 ```
 
-And you might noticed - we removed our hardcoded uuid :).
+And you might have noticed - we removed our hardcoded uuid :).
 
 Then we also need to have a dynamic route. Go to our `Route` enum (in our frontend).
 

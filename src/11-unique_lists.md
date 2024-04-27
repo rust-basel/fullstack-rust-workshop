@@ -43,7 +43,7 @@ impl Default for ShoppingList {
 }
 ```
 
-If you never came accross the `into()` method: It transform this `[]`-array into the type of `Self`, which is a `HashMap<String, ShoppingItem>`.
+If you never came across the `into()` method: It transforms this `[]`-array into the type of `Self`, which is a `HashMap<String, ShoppingItem>`.
 
 ## Change `InMemoryDatabase` to wrap `HashMap<String, ShoppingList>`
 

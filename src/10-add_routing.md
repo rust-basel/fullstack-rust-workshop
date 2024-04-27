@@ -11,7 +11,7 @@ Sometimes, you can find combinations of the two separated by a `#`, e.g. `your.b
 
 We already saw API endpoint routes in action in the axum chapters, so this chapter is a about navigator routing, and we will use routes without any `#`.
 
-## Add the router feature to cargo.toml
+## Add the router feature to `cargo.toml`
 ```toml
 dioxus = { version = "0.5.1", features = ["web", "router"] }
 ```
