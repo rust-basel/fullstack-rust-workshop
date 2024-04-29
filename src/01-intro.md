@@ -6,6 +6,10 @@ on your own again.
 The fullstack workshop will be a guided workshop, where we will implement the things together.
 If you do not want to copy all this boilerplate code, you can have a look at the finished repo [https://github.com/rust-basel/axum-dioxus-shopping-list](https://github.com/rust-basel/axum-dioxus-shopping-list).
 
+If you need specifically the solution for a chapter, you can have a look at the [solutions](https://github.com/rust-basel/workshop-2) repository. It is structured after the chapters in this book.
+
+If you see any issues - or errors in this book, or the solutions we are very happy for pull requests to fix these.
+
 ## Architecture
 
 We strive for a simple architecture with a frontend, backend and a database. For simplicity reasons, we implement a simple in memory database.
